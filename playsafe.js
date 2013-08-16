@@ -6,7 +6,10 @@ function getDetails(id) {
 }
 
 $.getJSON('/jobs', function(data) {
-    output="<table><th align='left'>Job</th><th align='right'>Status</th>"
+    output='<form method="post">'
+    output+='<input type="text" name="url">'
+    output+='<input type="submit" value="Add">'
+    output+="<table><th align='left'>Job</th><th align='right'>Status</th>"
     for (var i in data) {
         output+="<tr>"
         output+="<td><a href=javascript:getDetails("+i+")>"
