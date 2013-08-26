@@ -62,7 +62,7 @@ class PlaySafe(object):
             return
         args = [ "ffmpeg", "-i", stream ]
         args += FFMPEGARGS
-        args.append(self.config.output_dir + 
+        args.append(self.config["output_dir"] + 
                 '/' + self.get_filename(jsondata) + 
                 "." + EXTENSION)
         command = Command(args)
