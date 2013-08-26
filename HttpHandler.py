@@ -44,8 +44,9 @@ class HttpHandler(SimpleHTTPRequestHandler):
         url = s.rfile.read(int(s.headers['Content-Length']))
         try:
             s.server.playsafe.add(url.rstrip().replace('url=', ''))
-            s.send_response(200)
         except Exception, e:
             s.send_response(500)
             s.end_headers()
             s.wfile.write(e)
+            return
+        s.send_response(200)
