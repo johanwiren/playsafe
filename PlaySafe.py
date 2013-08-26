@@ -10,7 +10,6 @@ import os
 import re
 import sys
 import urllib
-import xml.etree.ElementTree as ElementTree
 import yaml
 
 FFMPEGARGS = [ "-vcodec", "copy", "-strict", "experimental", "-acodec", "copy", "-absf", "aac_adtstoasc" ]
@@ -63,7 +62,9 @@ class PlaySafe(object):
             return
         args = [ "ffmpeg", "-i", stream ]
         args += FFMPEGARGS
-        args.append(self.get_filename(jsondata) + "." + EXTENSION)
+        args.append(self.config.output_dir + 
+                '/' + self.get_filename(jsondata) + 
+                "." + EXTENSION)
         command = Command(args)
         self.commands.append(command)
         self.q.put(command)
@@ -94,4 +95,6 @@ if __name__ == "__main__":
     except:
         print "Could not load config.yml"
         sys.exit(1)
-    PlaySafe(config).run_server()
+    pid = os.fork()
+    if not pid:
+        PlaySafe(config).run_server()
