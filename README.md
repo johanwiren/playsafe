@@ -3,6 +3,15 @@ playsafe
 
 Simple web application to download streams from SVT Play
 
+Config
+------
+
+*config.yml* should contain these settings:
+
+    ---
+    port: 8000
+    output_dir: /tmp
+
 Usage
 -----
 
