@@ -60,12 +60,11 @@ class PlaySafe(object):
         stream = self.get_stream_from_m3u8(m3u)
         if stream is None:
             return
+        filename = "%s.%s" % (self.get_filename(jsondata), EXTENSION)
         args = [ "ffmpeg", "-i", stream ]
         args += FFMPEGARGS
-        args.append(self.config["output_dir"] + 
-                '/' + self.get_filename(jsondata) + 
-                "." + EXTENSION)
-        command = Command(args)
+        args.append('/'.join([self.config["output_dir"], filename]))
+        command = Command(args, name=filename)
         self.commands.append(command)
         self.q.put(command)
         return command

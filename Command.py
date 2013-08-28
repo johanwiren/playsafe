@@ -5,13 +5,14 @@ import subprocess
 
 class Command(object):
 
-    def __init__(self, args):
+    def __init__(self, args, name=None):
 
         self.status = "Queued"
         self.stdout = ''
         if not os.path.isabs(args[0]):
             abspath = distutils.spawn.find_executable(args[0])
             args[0] = abspath
+        self.name = name
         self.args = args
         self.process = None
 
