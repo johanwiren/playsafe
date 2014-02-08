@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
 from Command import Command
-from HttpHandler import HttpHandler
 from Queue import Queue
 from threading import Thread
-import BaseHTTPServer
 import json
 import os
 import re
@@ -18,8 +16,7 @@ EXTENSION = 'mp4'
 
 class PlaySafe(object):
 
-    def __init__(self, config):
-        self.config = config
+    def __init__(self, config=None):
         self.files = []
         self.commands = []
         self.q = Queue()
@@ -29,7 +26,7 @@ class PlaySafe(object):
     def runner(self):
         while self.run_threads:
             command = self.q.get()
-            if command != 'stop_server':
+            if command != 'stop':
                 command.run()
 
     def get_filename(self, jsondata):
@@ -46,13 +43,14 @@ class PlaySafe(object):
 
     def get_stream_from_m3u8(self, m3u):
         resolution_re = re.compile(r'.*RESOLUTION=' + RESOLUTION + r'.*')
-        wanted_line = None
-        for l in m3u.splitlines():
-            if wanted_line:
-                return l
-            if resolution_re.match(l):
-                wanted_line = True
-        return None
+        lines = m3u.splitlines()
+        # Get next row if resolution matches
+        stream = [lines[i+1] for i, line in enumerate(lines)
+                if resolution_re.match(line)]
+        if stream:
+            return stream[0]
+        else:
+            return None
 
     def add(self, url):
         jsondata = json.loads(urllib.urlopen(urllib.unquote(url) + "?output=json").read())
@@ -69,24 +67,14 @@ class PlaySafe(object):
         self.q.put(command)
         return command
 
-    def stop_server(self):
+    def stop(self):
         self.run_threads = False
-        self.q.put('stop_server')
+        self.q.put('stop')
         self.thread.join()
 
     def run_server(self):
-        self.httpserver = HttpServer(('', self.config['port']), HttpHandler, self)
+
         self.thread.start()
-        try:
-            self.httpserver.serve_forever()
-        except KeyboardInterrupt:
-            self.stop_server()
-
-class HttpServer(BaseHTTPServer.HTTPServer):
-
-    def __init__(self, address, handler, playsafe):
-        self.playsafe = playsafe
-        BaseHTTPServer.HTTPServer.__init__(self, address, handler)
 
 if __name__ == "__main__":
     try:

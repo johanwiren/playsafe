@@ -5,8 +5,12 @@ import subprocess
 
 class Command(object):
 
+    jobcount = 0;
+
     def __init__(self, args, name=None):
 
+        self.jobId = Command.jobcount
+        Command.jobcount += 1
         self.status = "Queued"
         self.stdout = ''
         if not os.path.isabs(args[0]):
@@ -34,12 +38,16 @@ class Command(object):
     def run(self):
         print "Starting command %s" % self.args
         self.status = "Running"
-        self.process = subprocess.Popen(
-            self.args,
-            bufsize=1,
-            shell=False,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,)
+        try:
+            self.process = subprocess.Popen(
+                self.args,
+                bufsize=1,
+                shell=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT)
+        except:
+            self.status = "Failed"
+            return
 
         for line in iter(self.process.stdout.readline, ""):
             self.stdout += line
@@ -50,3 +58,12 @@ class Command(object):
         else:
             self.status = "Failed"
         print "Job %s status: %s" % (self.args, self.status)
+
+    def simple_dict(self):
+        ''' Returns plain dict representation of the object '''
+        result = dict()
+        for k,v in self.__dict__.iteritems():
+            if k != 'process':
+                result[k] = v
+        return result
+

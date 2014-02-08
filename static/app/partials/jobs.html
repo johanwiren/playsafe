@@ -1,0 +1,12 @@
+<table><th>ID</th><th>Job</th><th>Status</th>
+    <tr ng-repeat="job in jobs | orderBy:jobId:true">
+        <td> {{job.jobId}} </td>
+        <td><a href="#/jobs/{{job.jobId}}">{{job.name}}</a></td>
+        <td> {{job.status}} </td>
+    </tr>
+</table>
+<button ng-click="refresh()">Refresh</button>
+
+<form name="urlForm" ng-controller="NewUrlCtrl" ng-submit="submit()">
+    Add new URL: <input type="url" name="input" ng-model="newurl" required>
+</form>

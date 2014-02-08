@@ -2,7 +2,7 @@ from PlaySafe import PlaySafe
 import json
 
 def playsafe_test():
-    ps = PlaySafe()
+    ps = PlaySafe(config=None)
 
     jsondata = json.loads(open('test/episode.json').read())
     assert ps.get_filename(jsondata) == 'kommissarie-montalbano-del-2-av-4-il-gioco-degli-specchi'
