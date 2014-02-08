@@ -3,6 +3,13 @@ playsafe
 
 Simple web application to download streams from SVT Play
 
+Requirements
+------------
+
+ffmpeg compiled with the following options:
+
+    --enable-openssl --enable-nonfree --enable-gpl --enable-libx264
+
 Config
 ------
 
