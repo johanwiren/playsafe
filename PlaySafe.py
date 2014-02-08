@@ -17,6 +17,7 @@ EXTENSION = 'mp4'
 class PlaySafe(object):
 
     def __init__(self, config=None):
+        self.config = config
         self.files = []
         self.commands = []
         self.q = Queue()
