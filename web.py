@@ -44,6 +44,5 @@ except:
 with daemon.DaemonContext():
     playsafe = PlaySafe(config=config)
     playsafe.run_server()
-    app.debug = True
     app.run(host='0.0.0.0', port=config['port'])
     playsafe.stop()
