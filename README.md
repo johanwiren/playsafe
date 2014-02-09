@@ -1,7 +1,7 @@
 playsafe
 ========
 
-Simple web application to download streams from SVT Play
+Simple flask/angular application to download streams from SVT Play
 
 Requirements
 ------------
@@ -24,6 +24,6 @@ Usage
 
 Start the server 
 
-    ./PlaySafe.py
+    ./web.py
 
 Copy-paste url's to shows you want to download into the web interface at http://localhost:8000
