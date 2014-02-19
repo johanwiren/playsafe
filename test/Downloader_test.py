@@ -28,7 +28,12 @@ def downloader_test():
     assert di.command.args == [ u'/usr/bin/echo', u'http://svtplay3q-f.akamaihd.net/i/world/open/20140210/1322836-005A/LABYRINT-005A-b6149effda4e5c1d_,900,348,564,1680,2800,.mp4.csmil/index_4_av.m3u8?null=', u'/tmp/labyrint-del-5-av-10.mp4' ]
 
     dl.add(di)
-    assert di.command.status == "Queued"
-    time.sleep(1)
+    assert di.command.status == ( "Queued" or "Running" )
+    count = 0
+    maxwait = 30
+    while di.command.status != "Completed" and count < maxwait:
+        # Wait for thread to finish
+        time.sleep(0.1)
+        count += 1
     assert di.command.status == "Completed"
     assert di.command.stdout.rstrip() == "http://svtplay3q-f.akamaihd.net/i/world/open/20140210/1322836-005A/LABYRINT-005A-b6149effda4e5c1d_,900,348,564,1680,2800,.mp4.csmil/index_4_av.m3u8?null= /tmp/labyrint-del-5-av-10.mp4"
