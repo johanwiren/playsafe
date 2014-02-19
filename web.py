@@ -10,6 +10,8 @@ import yaml
 
 app = Flask(__name__)
 
+CONFIG_DEFAULT = dict(debug=False)
+
 @app.route('/')
 def index():
     return redirect(url_for('static', filename='app/index.html'))
@@ -39,7 +41,7 @@ def show_job(jobId):
         return make_response(e.message, 404)
 
 try:
-    config = yaml.load(open('config.yml'))
+    config = dict(CONFIG_DEFAULT.items() + yaml.load(open('config.yml')).items())
 except:
     print "Could not load config.yml"
     sys.exit(1)
