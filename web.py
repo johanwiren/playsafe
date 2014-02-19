@@ -10,7 +10,7 @@ import yaml
 
 app = Flask(__name__)
 
-CONFIG_DEFAULT = dict(debug=False)
+CONFIG_DEFAULT = dict(debug=False, host='127.0.0.1')
 
 @app.route('/')
 def index():
@@ -49,9 +49,9 @@ except:
 downloader = Downloader()
 if config['debug']:
     app.debug = True
-    app.run(port=config['port'])
+    app.run(host=config['host'], port=config['port'])
     downloader.stop()
 else:
     with daemon.DaemonContext():
-        app.run(host='0.0.0.0', port=config['port'])
+        app.run(host=config['host'], port=config['port'])
         downloader.stop()
