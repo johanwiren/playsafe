@@ -1,7 +1,10 @@
+
 playsafe
 ========
 
 Simple flask/angular application to download streams from SVT Play
+
+[![Build Status](https://travis-ci.org/johanwiren/playsafe.png?branch=master)](https://travis-ci.org/johanwiren/playsafe)
 
 Requirements
 ------------
