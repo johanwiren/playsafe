@@ -19,8 +19,8 @@ class Downloader(object):
             thread.start()
 
     def add(self, downloaditem):
-        self.q.put(item) 
-        self.downloaditems.append(item)
+        self.q.put(downloaditem) 
+        self.downloaditems.append(downloaditem)
 
     def stop(self):
         Downloader.run_threads = False
@@ -37,7 +37,7 @@ class DownloadThread(threading.Thread):
 
     def run(self):
         while Downloader.run_threads:
-            self.__download_streams(self)
+            self.__download_streams()
             time.sleep(0.1)
 
     def __download_streams(self):
@@ -48,10 +48,11 @@ class DownloadThread(threading.Thread):
 
 class DownloadItem(object):
 
-    def __init__(self, stream):
+    def __init__(self, stream, output_dir):
         self.stream = stream
-        args = [ "ffmpeg", "-i", self.stream.streamurl ]
-        args += self.stream.ffmpegargs
-        args.append('/'.join([self.stream.output_dir, self.stream.filename]))
-        self.command = Command(args, name=filename)
+        self.command = None
+
+        outputfile = '/'.join([output_dir, self.stream.filename])
+        args = self.stream.downloadcommand % (self.stream.streamurl, outputfile)
+        self.command = Command(args.split(), name=self.stream.filename)
 

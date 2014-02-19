@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from flask import *
-from PlaySafe import *
+from Downloader import *
+from SvtStream import *
 import daemon
 import simplejson
 import subprocess
@@ -9,7 +10,6 @@ import yaml
 
 app = Flask(__name__)
 
-
 @app.route('/')
 def index():
     return redirect(url_for('static', filename='app/index.html'))
@@ -17,23 +17,26 @@ def index():
 @app.route('/jobs', methods=['GET', 'PUT'])
 def list_jobs():
     if request.method == 'GET':
-        return json.dumps([x.simple_dict() for x in playsafe.commands])
+        return json.dumps([x.command.simple_dict() for x in downloader.downloaditems])
     if request.method == 'PUT':
         try:
-            playsafe.add(request.data)
+            app.logger.debug(request.data)
+            svtstream = SvtStream(request.data)
+            downloaditem = DownloadItem(svtstream, config['output_dir'])
+            downloader.add(downloaditem)
             return make_response('', 201)
         except Exception as e:
+            app.logger.debug(e.message)
             return make_response(e.message, 500)
 
 @app.route('/jobs/<int:jobId>')
 def show_job(jobId):
     result = dict()
     try:
-        return json.dumps(playsafe.commands[jobId].simple_dict())
-    except:
-        return make_response('', 404)
-
-
+        return json.dumps(downloader.downloaditems[jobId].command.simple_dict())
+    except Exception as e:
+        app.logger.debug(e.message)
+        return make_response(e.message, 404)
 
 try:
     config = yaml.load(open('config.yml'))
@@ -41,8 +44,12 @@ except:
     print "Could not load config.yml"
     sys.exit(1)
     
-with daemon.DaemonContext():
-    playsafe = PlaySafe(config=config)
-    playsafe.run_server()
-    app.run(host='0.0.0.0', port=config['port'])
-    playsafe.stop()
+downloader = Downloader()
+if config['debug']:
+    app.debug = True
+    app.run(port=config['port'])
+    downloader.stop()
+else:
+    with daemon.DaemonContext():
+        app.run(host='0.0.0.0', port=config['port'])
+        downloader.stop()

@@ -6,17 +6,14 @@ import re
 import sys
 import urllib
 
-FFMPEGARGS = [ "-vcodec", "copy", "-strict", "experimental", "-acodec", "copy", "-absf", "aac_adtstoasc" ]
 RESOLUTION = '1280x720'
 EXTENSION = 'mp4'
-
+DOWNLOADCOMMAND = "ffmpeg -i %s -vcodec copy -strict experimental -acodec copy -absf aac_adtstoasc %s"
 
 class SvtStream(object):
 
-    def __init__(self, source, config):
-        self.ffmpegargs = FFMPEGARGS
-        self.config = config
-        self.output_dir = config['output_dir']
+    def __init__(self, source):
+        self.downloadcommand = DOWNLOADCOMMAND
         if type(source) == dict:
             self.__from_dict(source)
         else:
