@@ -13,28 +13,31 @@ EXTENSION = 'mp4'
 
 class SvtStream(object):
 
-    def __init__(self, config=None, url=url):
+    def __init__(self, source, config):
         self.ffmpegargs = FFMPEGARGS
         self.config = config
         self.output_dir = config['output_dir']
-        self.__from_url(url)
+        if type(source) == dict:
+            self.__from_dict(source)
+        else:
+            self.__from_url(source)
 
-    def __get_filename(self, jsondata):
-        filename = jsondata['statistics']['folderStructure'].split('.')[0]
+    def __get_filename(self, source):
+        filename = source['statistics']['folderStructure'].split('.')[0]
         filename += '-'
-        filename += ''.join(jsondata['statistics']['title'].split(':')[0:2])
+        filename += ''.join(source['statistics']['title'].split(':')[0:2])
         return filename
 
-    def __get_streamurl(self, jsondata):
-        for vref in jsondata['video']['videoReferences']:
+    def __get_streamurl(self, source):
+        for vref in source['video']['videoReferences']:
             if vref['playerType'] == 'ios':
                 return vref['url']
         # TODO: Raise exception
         return None
 
-    def __get_stream_from_m3u8(self, m3u):
+    def __get_stream_from_m3u8(self, m3u8):
         resolution_re = re.compile(r'.*RESOLUTION=' + RESOLUTION + r'.*')
-        lines = m3u.splitlines()
+        lines = m3u8.splitlines()
         # Get next row if resolution matches
         stream = [lines[i+1] for i, line in enumerate(lines)
                 if resolution_re.match(line)]
@@ -44,8 +47,16 @@ class SvtStream(object):
             # TODO: Raise exception
             return None
 
+    def __from_dict(self, source):
+        # Ugly hack to work with testing
+        self.m3u8 = open(self.__get_streamurl(source)).read()
+        self.streamurl = self.__get_stream_from_m3u8(self.m3u8)
+        self.filename = "%s.%s" % (self.__get_filename(source), EXTENSION)
+
+    # TODO: Refactor, remove code duplication
     def __from_url(self, url):
-        jsondata = json.loads(urllib.urlopen(urllib.unquote(url) + "?output=json").read())
-        self.m3u = urllib.urlopen(self.__get_streamurl(jsondata)).read()
-        self.streamurl = self.__get_stream_from_m3u8(m3u)
-        self.filename = "%s.%s" % (self.__get_filename(jsondata), EXTENSION)
+        source = json.loads(urllib.urlopen(urllib.unquote(url) + "?output=json").read())
+        self.m3u8 = urllib.urlopen(self.__get_streamurl(source)).read()
+        self.streamurl = self.__get_stream_from_m3u8(self.m3u8)
+        self.filename = "%s.%s" % (self.__get_filename(source), EXTENSION)
+
