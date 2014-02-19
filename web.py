@@ -1,10 +1,8 @@
 #!/usr/bin/env python
-from flask import *
 from Downloader import *
+from flask import *
 from SvtStream import *
 import daemon
-import simplejson
-import subprocess
 import sys
 import yaml
 
