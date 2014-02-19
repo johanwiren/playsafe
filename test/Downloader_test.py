@@ -21,7 +21,7 @@ def downloader_test():
     global dl
 
     ss = SvtStream(json.load(open('test/episode.json')))
-    ss.downloadcommand="/usr/bin/echo %s %s"
+    ss.downloadcommand="echo %s %s"
 
     dl = Downloader()
     di = DownloadItem(ss, config['output_dir'])
