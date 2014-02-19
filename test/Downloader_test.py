@@ -29,6 +29,6 @@ def downloader_test():
 
     dl.add(di)
     assert di.command.status == "Queued"
-    time.sleep(0.2)
+    time.sleep(1)
     assert di.command.status == "Completed"
     assert di.command.stdout.rstrip() == "http://svtplay3q-f.akamaihd.net/i/world/open/20140210/1322836-005A/LABYRINT-005A-b6149effda4e5c1d_,900,348,564,1680,2800,.mp4.csmil/index_4_av.m3u8?null= /tmp/labyrint-del-5-av-10.mp4"
