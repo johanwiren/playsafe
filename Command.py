@@ -1,5 +1,6 @@
 import distutils.spawn
 import os.path
+import signal
 import subprocess
 
 
@@ -21,10 +22,10 @@ class Command(object):
         self.process = None
 
     def pause(self):
-        self.process.send_signal(19)
+        self.process.send_signal(signal.SIGSTOP)
 
     def resume(self):
-        self.process.send_signal(18)
+        self.process.send_signal(signal.SIGCONT)
 
     def terminate(self):
         self.process.terminate()
