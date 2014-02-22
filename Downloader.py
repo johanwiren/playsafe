@@ -53,6 +53,6 @@ class DownloadItem(object):
         self.command = None
 
         outputfile = '/'.join([output_dir, self.stream.filename])
-        args = self.stream.downloadcommand % (self.stream.streamurl, outputfile)
+        args = self.stream.downloadcommand % {'url': self.stream.streamurl, 'output': outputfile}
         self.command = Command(args.split(), name=self.stream.filename)
 

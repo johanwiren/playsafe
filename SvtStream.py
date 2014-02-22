@@ -8,7 +8,7 @@ import urllib
 
 RESOLUTION = '1280x720'
 EXTENSION = 'mp4'
-DOWNLOADCOMMAND = "ffmpeg -i %s -vcodec copy -strict experimental -acodec copy -absf aac_adtstoasc %s"
+DOWNLOADCOMMAND = "ffmpeg -i %(url)s -vcodec copy -strict experimental -acodec copy -absf aac_adtstoasc %(output)s"
 
 class SvtStream(object):
 
