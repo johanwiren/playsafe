@@ -38,23 +38,30 @@ def show_job(jobId):
         app.logger.debug(e.message)
         return make_response(e.message, 404)
 
-try:
-    config = dict(CONFIG_DEFAULT.items() + yaml.load(open('config.yml')).items())
-except:
-    print "Could not load config.yml"
-    sys.exit(1)
-    
-if config['debug']:
-    downloader = Downloader()
-    app.debug = True
-    app.run(host=config['host'], port=config['port'])
-    downloader.stop()
-else:
-    stdout = open("server.out", "w")
-    stderr = open("server.err", "w")
-    stdin = open("/dev/null", "r")
-    with daemon.DaemonContext(stdout=stdout, stderr=stderr, stdin=stdin,
-            working_directory='.'):
+def main():
+    try:
+        config = dict(
+                CONFIG_DEFAULT.items()
+                + yaml.load(open('config.yml')).items()
+                )
+    except:
+        print "Could not load config.yml"
+        sys.exit(1)
+        
+    if config['debug']:
         downloader = Downloader()
+        app.debug = True
         app.run(host=config['host'], port=config['port'])
         downloader.stop()
+    else:
+        stdout = open("server.out", "w")
+        stderr = open("server.err", "w")
+        stdin = open("/dev/null", "r")
+        with daemon.DaemonContext(stdout=stdout, stderr=stderr, stdin=stdin,
+                working_directory='.'):
+            downloader = Downloader()
+            app.run(host=config['host'], port=config['port'])
+            downloader.stop()
+
+if __name__ == '__main__':
+    main()
