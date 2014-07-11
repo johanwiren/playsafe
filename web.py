@@ -44,12 +44,17 @@ except:
     print "Could not load config.yml"
     sys.exit(1)
     
-downloader = Downloader()
 if config['debug']:
+    downloader = Downloader()
     app.debug = True
     app.run(host=config['host'], port=config['port'])
     downloader.stop()
 else:
-    with daemon.DaemonContext():
+    stdout = open("server.out", "w")
+    stderr = open("server.err", "w")
+    stdin = open("/dev/null", "r")
+    with daemon.DaemonContext(stdout=stdout, stderr=stderr, stdin=stdin,
+            working_directory='.'):
+        downloader = Downloader()
         app.run(host=config['host'], port=config['port'])
         downloader.stop()
