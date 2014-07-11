@@ -1,23 +1,29 @@
-<div class="navbar">
-    <div class="navbar-right">
-        <div align="right">
-            <form name="urlForm" ng-controller="NewUrlCtrl" ng-submit="submit()">
-                Add new URL: <input type="url" name="input" ng-model="newurl" required>
-            </form>
+<div class="navbar navbar-static-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <span class="navbar-brand">Playsafe</span>
         </div>
+        <form class="navbar-form navbar-right" name="urlForm" ng-controller="NewUrlCtrl" ng-submit="submit()">
+            <div class="form-group">
+            New: <input type="url" placeholder="URL" name="input" ng-model="newurl" required>
+            </div>
+        </form>
     </div>
 </div>
 
-<div class="table-responsive">
-    <table class="table table-striped"><th>ID</th><th>Job</th><th>Status</th>
-        <tr ng-repeat="job in jobs | orderBy:jobId:true">
-            <td> {{job.jobId}} </td>
-            <td><a href="#/jobs/{{job.jobId}}">{{job.name}}</a></td>
-            <td> {{job.status}} </td>
-        </tr>
-    </table>
-</div>
+<div class="container-fluid">
 
-<div align="center">
+    <div class="table-responsive">
+        <table class="table table-striped"><th>ID</th><th>Job</th><th>Status</th>
+            <tr ng-repeat="job in jobs | orderBy:jobId:true">
+                <td> {{job.jobId}} </td>
+                <td><a href="#/jobs/{{job.jobId}}">{{job.name}}</a></td>
+                <td> {{job.status}} </td>
+            </tr>
+        </table>
+    </div>
+
     <button class="btn btn-primary" ng-click="refresh()">Refresh</button>
 </div>
+
+
