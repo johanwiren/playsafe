@@ -26,6 +26,10 @@ playsafeControllers.controller('JobDetailCtrl',
               .success(function(data) {
                 $scope.job = data;
             });
+
+            $scope.stop = function() {
+                $http.post('../../jobs/' + $routeParams.jobId + '/stop')
+            };
 });
 
 // Controller for handling new urls from job form

@@ -38,6 +38,15 @@ def show_job(jobId):
         app.logger.debug(e.message)
         return make_response(e.message, 404)
 
+@app.route('/jobs/<int:jobId>/stop', methods=['POST'])
+def stop_job(jobId):
+    command = downloader.downloaditems[jobId].command
+    if command.status == 'Running':
+        command.kill()
+        return make_response('', 200)
+    else:
+        return make_response('Cannot stop job %s' % jobId, 400)
+
 try:
     config = dict(CONFIG_DEFAULT.items() + yaml.load(open('config.yml')).items())
 except:
